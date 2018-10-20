@@ -12,10 +12,9 @@ namespace BLLEcommerce
         private readonly string _connectionString;
         private IProductProvider _productProvider;
 
-        public BLL_Product(string ConnectionString)
+        public BLL_Product(IConfiguration iconfiguration)
         {
-            this._connectionString = ConnectionString;
-            _productProvider = new ProductProvider(_connectionString);
+            _productProvider = new ProductProvider(iconfiguration);
         }
 
         public void CreatNewProduct(Product product)

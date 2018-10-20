@@ -22,9 +22,9 @@ namespace Ecommerce
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            //Configuration = configuration;
             //set connection string
-            ConnectionString = configuration["ConnectionString"];
+            //ConnectionString = configuration["ConnectionString"];
         }
 
 

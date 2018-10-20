@@ -13,13 +13,11 @@ namespace Ecommerce.Controllers
 {
     public class ProductController : Controller
     {
-        private readonly string ConnectionString;
         private IBLL_Product _bllProduct;
 
         public ProductController(IConfiguration iconfiguration)
         {
-            this.ConnectionString = iconfiguration["ConnectionString"];
-            _bllProduct = new BLL_Product(ConnectionString);
+            _bllProduct = new BLL_Product(iconfiguration);
         }
         
         public IActionResult Index()

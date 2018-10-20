@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using CommonModels;
+using Microsoft.Extensions.Configuration;
 
 namespace DALEcommerce
 {
@@ -11,10 +12,10 @@ namespace DALEcommerce
         private readonly string _connectionString;
         private DAL_Utilities _dalUtilities;
 
-        public ProductProvider(string ConnectionString)
+        public ProductProvider(IConfiguration iconfiguration)
         {
-            this._connectionString = ConnectionString;
-            _dalUtilities = new DAL_Utilities(_connectionString);
+            _dalUtilities = new DAL_Utilities(iconfiguration);
+            _connectionString = _dalUtilities.GetConnectionString();
         }
 
         //====================================CREATE===================================//

@@ -4,6 +4,7 @@ using System.Text;
 using System.Data;
 using System.Configuration;
 using System.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace DALEcommerce
 {
@@ -11,15 +12,15 @@ namespace DALEcommerce
     {
         private readonly string _connectionString;
 
-        public DAL_Utilities(string ConnectionString)
+        public DAL_Utilities(IConfiguration iconfiguration)
         {
-            this._connectionString = ConnectionString;
+            this._connectionString = iconfiguration["ConnectionString"];
         }
 
-        //public string GetConnectionString()
-        //{
-        //    return _connectionString;
-        //}
+        public string GetConnectionString()
+        {
+            return _connectionString;
+        }
 
         //public int InsertUpdateDeleteQry(string sql)
         //{
