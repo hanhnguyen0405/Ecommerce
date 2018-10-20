@@ -9,7 +9,6 @@ namespace BLLEcommerce
 {
     public class BLL_Product : Interfaces.IBLL_Product
     {
-        private readonly string _connectionString;
         private IProductProvider _productProvider;
 
         public BLL_Product(IConfiguration iconfiguration)

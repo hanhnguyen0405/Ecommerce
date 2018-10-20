@@ -10,7 +10,7 @@ namespace Ecommerce.Models
 {
     public class ProductVM 
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [DisplayName("Product Name")]
@@ -23,5 +23,8 @@ namespace Ecommerce.Models
         public ProductCategoryVM ProductCategory { get; set; }
 
         public PriceVM Price { get; set; }
+
+        public int Quantity { get; set; }
+
     }
 }

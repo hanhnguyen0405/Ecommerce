@@ -106,8 +106,14 @@ namespace Ecommerce.Controllers
 
         //Add to Order
         [HttpGet]
-        public IActionResult AddToOrder(int Id)
+        public IActionResult AddToOrder(ProductVM productVM)
         {
+            OrderItem orderItem = new OrderItem()
+            {
+                ProductId = productVM.Id,
+                Quantity = productVM.Quantity,
+                UnitPrice = productVM.Price.UnitPrice
+            };
             
             return View();
         }

@@ -144,7 +144,7 @@ namespace DALEcommerce
                                     p.Price = new Price
                                     {
                                         ProductId = Convert.ToInt32(rdr["Id"]),
-                                        UnitPrice = Convert.ToDouble(rdr["UnitPrice"])
+                                        UnitPrice = (float)(rdr["UnitPrice"])
                                     };
                                     p.ProductCategory = new ProductCategory
                                     {
@@ -195,7 +195,7 @@ namespace DALEcommerce
                                     p.Price = new Price
                                     {
                                         ProductId = Convert.ToInt32(rdr["Id"]),
-                                        UnitPrice = Convert.ToDouble(rdr["UnitPrice"])
+                                        UnitPrice = (float)(rdr["UnitPrice"])
                                     };
                                     p.ProductCategory = new ProductCategory
                                     {

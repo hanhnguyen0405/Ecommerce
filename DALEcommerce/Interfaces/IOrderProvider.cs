@@ -11,5 +11,7 @@ namespace DALEcommerce.Interfaces
         Order ReadOrder(int Id);
         void UpdateOrder(Order order);
         int DeleteOrder(int Id);
+        int GetCurrentOrderId();
+        void AddItemIntoOrder(OrderItem item);
     }
 }

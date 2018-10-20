@@ -13,6 +13,6 @@ namespace Ecommerce.Models
 
         [DisplayName("Price")]
         [Range(typeof(double),"0.1", "100000000000000000000", ErrorMessage ="Invalid price")]
-        public double UnitPrice { get; set; }
+        public float UnitPrice { get; set; }
     }
 }
