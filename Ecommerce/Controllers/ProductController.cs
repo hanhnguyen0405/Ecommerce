@@ -19,8 +19,8 @@ namespace Ecommerce.Controllers
 
         public ProductController(IConfiguration iconfiguration, IMapper mapper)
         {
-            this.ConnectionString = iconfiguration["ConnectionString"];
-            _bllProduct = new BLL_Product(ConnectionString);
+            _bllProduct = new BLL_Product(iconfiguration);
+            _mapper = mapper;
         }
         
         //List all products
