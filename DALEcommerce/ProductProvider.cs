@@ -165,9 +165,48 @@ namespace DALEcommerce
             }
         }
 
-        public Product ReadProduct(int Id)
+        public Product ReadProductById(int productId)
         {
-            throw new NotImplementedException();
+            Product p = new Product();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("Select * from Product,Price,ProductCategory where Product.Id=Price.ProductId and Product.Id=ProductCategory.ProductId and Product.Id=@Id", conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@Id", productId);
+                        try
+                        {
+                            conn.Open();
+                            using (SqlDataReader rdr = cmd.ExecuteReader())
+                            {
+
+                                if (rdr.Read())
+                                {
+                                    p.Id = Convert.ToInt32(rdr["Id"]);
+                                    p.Name = rdr["Name"].ToString();
+                                    p.Description = rdr["Description"].ToString();
+                                    p.Price = new Price
+                                    {
+                                        ProductId = Convert.ToInt32(rdr["ProductId"]),
+                                        UnitPrice = Convert.ToDouble(rdr["UnitPrice"])
+                                    };
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            throw;
+                        }
+                    }
+                }
+                return p;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         //====================================UPDATE===================================//

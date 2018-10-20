@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using CommonModels;
+using Ecommerce.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +21,7 @@ namespace Ecommerce
         public IConfiguration Configuration { get; }
 
         //connection string
-        public static string ConnectionString { get; set; }
+        //public static string ConnectionString { get; set; }
 
         public Startup(IConfiguration configuration)
         {
@@ -41,8 +44,16 @@ namespace Ecommerce
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            //get connection string
+            //automapper
+            var config = new AutoMapper.MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductVM, Product>();
+                cfg.CreateMap<PriceVM, Price>();
+                cfg.CreateMap<ProductCategoryVM, ProductCategory>();
+            });
 
+            IMapper mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,8 +76,11 @@ namespace Ecommerce
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
+                    //name: "default",
+                    //template: "{controller=Home}/{action=Index }/{id?}");
                     name: "default",
-                    template: "{controller=Home}/{action=Index }/{id?}");
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Product", action = "Index" });
             });
         }
     }

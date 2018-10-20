@@ -37,9 +37,11 @@ namespace BLLEcommerce
             return results;
         }
 
-        public Product GetProductById(int id)
+        public Product GetProductById(int productId)
         {
-            throw new NotImplementedException();
+            Product product = new Product();
+            product = _productProvider.ReadProductById(productId);
+            return product;
         }
 
         public int UpdateProductById(Product product)

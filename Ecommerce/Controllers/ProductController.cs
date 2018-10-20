@@ -8,40 +8,56 @@ using BLLEcommerce.Interfaces;
 using Ecommerce.Models;
 using Microsoft.Extensions.Configuration;
 using CommonModels;
+using AutoMapper;
 
 namespace Ecommerce.Controllers
 {
     public class ProductController : Controller
     {
         private IBLL_Product _bllProduct;
+        IMapper _mapper;
 
-        public ProductController(IConfiguration iconfiguration)
+        public ProductController(IConfiguration iconfiguration, IMapper mapper)
         {
-            _bllProduct = new BLL_Product(iconfiguration);
+            this.ConnectionString = iconfiguration["ConnectionString"];
+            _bllProduct = new BLL_Product(ConnectionString);
         }
         
+        //List all products
         public IActionResult Index()
         {
             List<Product> products = _bllProduct.GetAllProducts().ToList();
-            return View(products);
+            List<ProductVM> productVMs = new List<ProductVM>();
+            foreach (Product product in products)
+            {
+                productVMs.Add(_mapper.Map<ProductVM>(product));
+            }
+            return View(productVMs);
         }
 
         //Create a product
         [HttpGet]
         public IActionResult CreateProduct()
         {
-            //string connectionString = _iconfiguration.GetConnectionString("Ecommerce_DefaultConnectionString");
             //ProductVM productVM = new ProductVM();
-            ViewData["ProductCategories"] = _bllProduct.GetAllProductCategories().ToList();
+            List<ProductCategory> pcs = new List<ProductCategory>();
+            pcs = _bllProduct.GetAllProductCategories().Cast<ProductCategory>().ToList();
+            List<ProductCategoryVM> pcVMs = new List<ProductCategoryVM>();
+            foreach (ProductCategory pc in pcs)
+            {
+                pcVMs.Add(_mapper.Map<ProductCategoryVM>(pc));
+            }
+            ViewData["ProductCategories"] = pcVMs;
             
             return View();
         }
 
         [HttpPost]
-        public IActionResult CreateProduct(Product product)
+        public IActionResult CreateProduct(ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
+                var product = _mapper.Map<Product>(productVM);
                 _bllProduct.CreatNewProduct(product);
 
                 return RedirectToAction("Index");
@@ -49,5 +65,15 @@ namespace Ecommerce.Controllers
 
             return View();
         }
+
+        //view a product
+        [HttpGet]
+        public IActionResult EditProduct(int productId)
+        {
+            Product product = new Product();
+            product = _bllProduct.GetProductById(productId);
+            return View();
+        }
+
     }
 }
