@@ -12,7 +12,7 @@ namespace DALEcommerce.Interfaces
 
         IEnumerable<ProductCategory> ReadAllProductCategories();
         IEnumerable<Product> ReadAllProducts();
-        Product ReadProduct(int Id);
+        Product ReadProductById(int Id);
 
         void UpdateProduct(Product product);
 

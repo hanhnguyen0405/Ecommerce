@@ -20,7 +20,7 @@ namespace Ecommerce.Models
         public string Description { get; set; }
 
         [DisplayName("Product Category")]
-        public ProductCategory ProductCategory { get; set; }
+        public ProductCategoryVM ProductCategory { get; set; }
 
         public PriceVM Price { get; set; }
     }
