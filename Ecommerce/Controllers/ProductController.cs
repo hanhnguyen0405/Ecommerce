@@ -41,16 +41,8 @@ namespace Ecommerce.Controllers
         [HttpGet]
         public IActionResult CreateProduct()
         {
-            //ProductVM productVM = new ProductVM();
-            List<ProductCategory> pcs = new List<ProductCategory>();
-            pcs = _bllProduct.GetAllProductCategories().Cast<ProductCategory>().ToList();
-            List<ProductCategoryVM> pcVMs = new List<ProductCategoryVM>();
-            foreach (ProductCategory pc in pcs)
-            {
-                pcVMs.Add(_mapper.Map<ProductCategoryVM>(pc));
-            }
-            ViewData["ProductCategories"] = pcVMs;
-            
+            ViewData["ProductCategories"] = GetProductCategoryVM();
+
             return View();
         }
 
@@ -70,12 +62,69 @@ namespace Ecommerce.Controllers
 
         //view a product
         [HttpGet]
-        public IActionResult EditProduct(int productId)
+        public IActionResult ViewProduct(int Id)
         {
             Product product = new Product();
-            product = _bllProduct.GetProductById(productId);
+            product = _bllProduct.GetProductById(Id);
+            ProductVM productVM = _mapper.Map<ProductVM>(product);
+            return View(productVM);
+        }
+
+        //Edit a product
+        [HttpGet]
+        public IActionResult EditProduct(int Id)
+        {
+            Product product = new Product();
+            product = _bllProduct.GetProductById(Id);
+            ProductVM productVM = _mapper.Map<ProductVM>(product);
+
+            ViewData["ProductCategories"] = GetProductCategoryVM();
+
+            return View(productVM);
+        }
+
+        //save changes in product
+        [HttpPost]
+        public IActionResult EditProduct(ProductVM productVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var product = _mapper.Map<Product>(productVM);
+                _bllProduct.UpdateProduct(product);
+
+                return RedirectToAction("Index");
+            }
+
             return View();
         }
 
+        //Delete a product
+        [HttpGet]
+        public IActionResult DeleteProduct(int Id)
+        {
+            _bllProduct.DeleteProduct(Id);
+            return RedirectToAction("Index");
+        }
+
+        //Add to Order
+        [HttpGet]
+        public IActionResult AddToOrder(int Id)
+        {
+            
+            return View();
+        }
+
+
+        private List<ProductCategoryVM> GetProductCategoryVM()
+        {
+            List<ProductCategory> pcs = new List<ProductCategory>();
+            pcs = _bllProduct.GetAllProductCategories().Cast<ProductCategory>().ToList();
+            List<ProductCategoryVM> pcVMs = new List<ProductCategoryVM>();
+            foreach (ProductCategory pc in pcs)
+            {
+                pcVMs.Add(_mapper.Map<ProductCategoryVM>(pc));
+            }
+            return pcVMs;
+        }
     }
 }

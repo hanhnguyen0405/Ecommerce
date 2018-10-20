@@ -8,11 +8,12 @@ namespace BLLEcommerce.Interfaces
     public interface IBLL_Product
     {
         void CreatNewProduct(Product product);
-        Product GetProductById(int id);
+        Product GetProductById(int productId);
 
         IEnumerable<ProductCategory> GetAllProductCategories();
         IEnumerable<Product> GetAllProducts();
-        int UpdateProductById(Product product);
+        void UpdateProduct(Product product);
+        void DeleteProduct(int productId);
        
     }
 }

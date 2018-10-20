@@ -18,23 +18,24 @@ namespace DALEcommerce
         }
 
         //====================================CREATE===================================//
-        public int CreateProduct(Product product)
+        public void CreateProduct(Product product)
         {
-            int productId = 0;
             try
             {
                 using (SqlConnection conn = new SqlConnection(_connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("Insert into Product values (@name,@description,@product_category_id); SELECT CAST(scope_identity() AS int)", conn))
+                    using (SqlCommand cmd = new SqlCommand("spProductCreate", conn))
                     {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("@name", product.Name);
-                        cmd.Parameters.AddWithValue("@description", product.Description);
-                        cmd.Parameters.AddWithValue("@product_category_id", product.ProductCategory.Id);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.Add("@ProductId", SqlDbType.Int).Direction = ParameterDirection.Output;
+                        cmd.Parameters.AddWithValue("@Name", product.Name);
+                        cmd.Parameters.AddWithValue("@Description", product.Description);
+                        cmd.Parameters.AddWithValue("@ProductCategoryId", product.ProductCategory.Id);
+                        cmd.Parameters.AddWithValue("@UnitPrice", product.Price.UnitPrice);
                         try
                         {
                             conn.Open();
-                            productId = (int)cmd.ExecuteScalar();
+                            cmd.ExecuteNonQuery();
                         }
                         catch (Exception e)
                         {
@@ -42,7 +43,6 @@ namespace DALEcommerce
                         }
                     }
                 }
-                return productId;
             }
             catch (Exception e)
             {
@@ -56,9 +56,9 @@ namespace DALEcommerce
             {
                 using (SqlConnection conn = new SqlConnection(_connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("Insert into Price values (@productId,@price)", conn))
+                    using (SqlCommand cmd = new SqlCommand("spPriceCreate", conn))
                     {
-                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@productId", productId);
                         cmd.Parameters.AddWithValue("@price", price);
                         try
@@ -87,7 +87,7 @@ namespace DALEcommerce
             {
                 using (SqlConnection conn = new SqlConnection(_connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("Select * from ProductCategory", conn))
+                    using (SqlCommand cmd = new SqlCommand("spProductCategoryReadAll", conn))
                     {
                         cmd.CommandType = CommandType.Text;
                         try
@@ -125,9 +125,9 @@ namespace DALEcommerce
             {
                 using (SqlConnection conn = new SqlConnection(_connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("Select * from Product,Price where Product.Id=Price.ProductId", conn))
+                    using (SqlCommand cmd = new SqlCommand("spProductReadAll", conn))
                     {
-                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandType = CommandType.StoredProcedure;
                         try
                         {
                             conn.Open();
@@ -138,12 +138,17 @@ namespace DALEcommerce
                                 {
                                     Product p = new Product();
                                     p.Id = Convert.ToInt32(rdr["Id"]);
-                                    p.Name = rdr["Name"].ToString();
+                                    p.Name = rdr["ProductName"].ToString();
                                     p.Description = rdr["Description"].ToString();
                                     p.Price = new Price
                                     {
-                                        ProductId = Convert.ToInt32(rdr["ProductId"]),
+                                        ProductId = Convert.ToInt32(rdr["Id"]),
                                         UnitPrice = Convert.ToDouble(rdr["UnitPrice"])
+                                    };
+                                    p.ProductCategory = new ProductCategory
+                                    {
+                                        Id = Convert.ToInt32(rdr["ProductCategoryID"]),
+                                        Name = rdr["ProductCategoryName"].ToString()
                                     };
 
                                     results.Add(p);
@@ -164,17 +169,17 @@ namespace DALEcommerce
             }
         }
 
-        public Product ReadProductById(int productId)
+        public Product ReadProductByProductId(int productId)
         {
             Product p = new Product();
             try
             {
                 using (SqlConnection conn = new SqlConnection(_connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand("Select * from Product,Price,ProductCategory where Product.Id=Price.ProductId and Product.Id=ProductCategory.ProductId and Product.Id=@Id", conn))
+                    using (SqlCommand cmd = new SqlCommand("spProductReadByProductId", conn))
                     {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("@Id", productId);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@ProductId", productId);
                         try
                         {
                             conn.Open();
@@ -184,12 +189,17 @@ namespace DALEcommerce
                                 if (rdr.Read())
                                 {
                                     p.Id = Convert.ToInt32(rdr["Id"]);
-                                    p.Name = rdr["Name"].ToString();
+                                    p.Name = rdr["ProductName"].ToString();
                                     p.Description = rdr["Description"].ToString();
                                     p.Price = new Price
                                     {
-                                        ProductId = Convert.ToInt32(rdr["ProductId"]),
+                                        ProductId = Convert.ToInt32(rdr["Id"]),
                                         UnitPrice = Convert.ToDouble(rdr["UnitPrice"])
+                                    };
+                                    p.ProductCategory = new ProductCategory
+                                    {
+                                        Id = Convert.ToInt32(rdr["ProductCategoryID"]),
+                                        Name = rdr["ProductCategoryName"].ToString()
                                     };
                                 }
                             }
@@ -211,14 +221,65 @@ namespace DALEcommerce
         //====================================UPDATE===================================//
         public void UpdateProduct(Product product)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("spProductUpdate", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@ProductId", product.Id);
+                        cmd.Parameters.AddWithValue("@Name", product.Name);
+                        cmd.Parameters.AddWithValue("@Description", product.Description);
+                        cmd.Parameters.AddWithValue("@ProductCategoryId", product.ProductCategory.Id);
+                        cmd.Parameters.AddWithValue("@UnitPrice", product.Price.UnitPrice);
+
+                        try
+                        {
+                            conn.Open();
+                            cmd.ExecuteNonQuery();
+                        }
+                        catch (Exception e)
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         //====================================DELETE===================================//
 
-        public int DeleteProduct(int Id)
+        public void DeleteProduct(int productId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand("spProductDelete", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@ProductId", productId);
+                        try
+                        {
+                            conn.Open();
+                            cmd.ExecuteNonQuery();
+                        }
+                        catch (Exception e)
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
     }
 }

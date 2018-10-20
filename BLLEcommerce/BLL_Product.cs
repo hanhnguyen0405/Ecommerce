@@ -20,10 +20,8 @@ namespace BLLEcommerce
 
         public void CreatNewProduct(Product product)
         {
-            int productId= _productProvider.CreateProduct(product);
-            _productProvider.CreatePrice(productId, product.Price.UnitPrice);
+            _productProvider.CreateProduct(product);
         }
-
         public IEnumerable<ProductCategory> GetAllProductCategories()
         {
             List<ProductCategory> results = new List<ProductCategory>();
@@ -41,13 +39,19 @@ namespace BLLEcommerce
         public Product GetProductById(int productId)
         {
             Product product = new Product();
-            product = _productProvider.ReadProductById(productId);
+            product = _productProvider.ReadProductByProductId(productId);
             return product;
         }
 
-        public int UpdateProductById(Product product)
+        public void UpdateProduct(Product product)
         {
-            throw new NotImplementedException();
+            _productProvider.UpdateProduct(product);
         }
+
+        public void DeleteProduct(int productId)
+        {
+            _productProvider.DeleteProduct(productId);
+        }
+
     }
 }

@@ -1,17 +1,17 @@
 ﻿@model Ecommerce.Models.ProductVM
 
 @{
-    ViewData["Title"] = "Create Product";
+    ViewData["Title"] = "Edit Product";
 }
 
-<h2>Create Product</h2>
+<h2>Edit Product</h2>
 
 <h4>Product Information</h4>
 <hr />
 <div class="form-horizontal">
     <div class="row">
         <div class="col-md-12">
-            <form asp-action="CreateProduct">
+            <form asp-action="EditProduct">
                 <div class="form-group">
                     @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-3" })
                     <div class="col-md-9">
@@ -29,7 +29,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.ProductCategory, htmlAttributes: new { @class = "control-label col-md-3" })
                     <div class="col-md-9">
-                        @Html.DropDownListFor(model =>model.ProductCategory.Id, new SelectList((IEnumerable<ProductCategoryVM>)ViewData["ProductCategories"],"Id","Name"),
+                        @Html.DropDownListFor(model =>model.ProductCategory.Id, new SelectList((IEnumerable<ProductCategoryVM>)ViewData["ProductCategories"],"Id","Name",Model.ProductCategory),
                                                                            "Select Category", htmlAttributes: new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.ProductCategory, "", new { @class = "text-danger" })
                     </div>
@@ -45,7 +45,8 @@
                 <div class="form-group">
                     <div class="col-md-9 col-md-offset-3">
                         <input type="button" onclick="location.href='@Url.Action("Index", "Product")'" value="Cancel" class="btn btn-sm btn-default" />
-                        <input type="submit" value="Create" class="btn btn-sm btn-success " />
+                        <input type="button" onclick="location.href='@Url.Action("DeleteProduct", "Product", new {id = Model.Id})'" value="Delete" class="btn btn-sm btn-warning" />
+                        <input type="submit" value="Save" class="btn btn-sm btn-success " />
                     </div>
                 </div>
             </form>

@@ -7,15 +7,15 @@ namespace DALEcommerce.Interfaces
 {
     public interface IProductProvider
     {
-        int CreateProduct(Product product);
+        void CreateProduct(Product product);
         void CreatePrice(int productId, double price);
 
         IEnumerable<ProductCategory> ReadAllProductCategories();
         IEnumerable<Product> ReadAllProducts();
-        Product ReadProductById(int Id);
+        Product ReadProductByProductId(int productId);
 
         void UpdateProduct(Product product);
 
-        int DeleteProduct(int Id);
+        void DeleteProduct(int productId);
     }
 }
